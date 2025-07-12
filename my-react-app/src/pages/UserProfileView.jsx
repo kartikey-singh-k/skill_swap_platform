@@ -38,13 +38,28 @@ function UserProfileView() {
     return <div style={{ padding: "2rem", color: "red" }}>❌ Profile not found.</div>;
   }
 
+  const isOwnProfile = user && user.id === profile.id;
+
   return (
     <div>
       <Header />
       <div className="profile-view">
         <div className="profile-view__content">
           <div className="profile-view__left">
-            <button onClick={handleRequest} className="request-button">Request</button>
+            <button
+              onClick={handleRequest}
+              className="request-button"
+              disabled={isOwnProfile}
+              style={{
+                backgroundColor: isOwnProfile ? "#ccc" : "#007bff",
+                cursor: isOwnProfile ? "not-allowed" : "pointer",
+                color: isOwnProfile ? "#666" : "#fff",
+                marginBottom: "1rem"
+              }}
+            >
+              {isOwnProfile ? "Your Profile" : "Request"}
+            </button>
+
             <h2>{profile.name}</h2>
             <p><strong>Skills Offered:</strong> {(profile.skills_offered || []).join(", ")}</p>
             <p><strong>Skills Wanted:</strong> {(profile.skills_wanted || []).join(", ")}</p>

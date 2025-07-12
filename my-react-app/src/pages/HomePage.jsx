@@ -17,7 +17,6 @@ function HomePage() {
       .catch((err) => console.error("❌ Failed to load profiles:", err));
   }, []);
 
-  // Optional: Filter out current user from list
   const filteredProfiles = user
     ? profiles.filter((p) => p.email !== user.email)
     : profiles;
@@ -31,11 +30,20 @@ function HomePage() {
   return (
     <div>
       <Header />
+
+      {user && (
+        <div className="user-profile-section" style={{ padding: "2rem", backgroundColor: "#f4f4f4" }}>
+          <h2>Your Profile</h2>
+          <ProfileCard profile={user} />
+        </div>
+      )}
+
       <div className="profile-list">
         {currentProfiles.map((profile) => (
           <ProfileCard key={profile.id} profile={profile} />
         ))}
       </div>
+
       <Pagination current={currentPage} total={totalPages} onChange={setCurrentPage} />
     </div>
   );
