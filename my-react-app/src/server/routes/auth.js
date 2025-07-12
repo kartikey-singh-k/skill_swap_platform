@@ -15,12 +15,11 @@ router.post("/login", (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
-    // Remove password before sending
     const { password: _, ...safeUser } = user;
-
     res.json({ success: true, user: safeUser });
   });
 });
+
 
 // Get user by ID
 router.get("/users/:id", (req, res) => {
@@ -48,21 +47,27 @@ router.get("/users", (req, res) => {
     res.json(safeUsers);
   });
 });
+// ✅ POST /api/requests - store skill swap request
+router.post("/requests", (req, res) => {
+  const { fromUserId, toUserId, skillOffered, skillWanted, message } = req.body;
 
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+  if (!fromUserId || !toUserId || !skillOffered || !skillWanted || !message) {
+    return res.status(400).json({ success: false, message: "Missing fields" });
+  }
 
-  db.query("SELECT * FROM users WHERE email = $1", [email], (err, result) => {
-    if (err) return res.status(500).json({ success: false });
+  db.query(
+    `INSERT INTO requests (from_user_id, to_user_id, skill_offered, skill_wanted, message)
+     VALUES ($1, $2, $3, $4, $5)`,
+    [fromUserId, toUserId, skillOffered, skillWanted, message],
+    (err) => {
+      if (err) {
+        console.error("❌ Error saving request:", err);
+        return res.status(500).json({ success: false });
+      }
 
-    const user = result.rows[0];
-    if (!user || user.password !== password) {
-      return res.status(401).json({ success: false, message: "Invalid credentials" });
+      res.json({ success: true });
     }
-
-    const { password: _, ...safeUser } = user;
-    res.json({ success: true, user: safeUser });
-  });
+  );
 });
 
 export default router;

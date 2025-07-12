@@ -1,12 +1,52 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../auth";
 
 function RequestDetailsPage() {
-  const { id } = useParams();
+  const { id: toUserId } = useParams(); // receiver's ID
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const [skillOffered, setSkillOffered] = useState("");
+  const [skillWanted, setSkillWanted] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Skill swap request submitted!");
+
+    if (!user) {
+      alert("Please login to send requests.");
+      navigate("/login");
+      return;
+    }
+
+    const requestBody = {
+      fromUserId: user.id,
+      toUserId: parseInt(toUserId),
+      skillOffered,
+      skillWanted,
+      message,
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestBody),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert("✅ Skill swap request submitted!");
+        navigate("/");
+      } else {
+        alert("❌ Failed to send request.");
+      }
+    } catch (err) {
+      console.error("Error submitting request:", err);
+      alert("Server error.");
+    }
   };
 
   return (
@@ -15,17 +55,19 @@ function RequestDetailsPage() {
         <h2 className="request__title">Send Skill Swap Request</h2>
         <form className="request__form" onSubmit={handleSubmit}>
           <label className="request__label">Skill You Offer</label>
-          <select className="request__select">
-            <option>JavaScript</option>
-            <option>Python</option>
-            <option>UI/UX Design</option>
+          <select className="request__select" value={skillOffered} onChange={(e) => setSkillOffered(e.target.value)} required>
+            <option value="">--Select--</option>
+            {(user?.skills_offered || []).map((skill, i) => (
+              <option key={i} value={skill}>{skill}</option>
+            ))}
           </select>
 
           <label className="request__label">Skill You Want</label>
-          <select className="request__select">
-            <option>Graphic Design</option>
-            <option>Marketing</option>
-            <option>Data Analysis</option>
+          <select className="request__select" value={skillWanted} onChange={(e) => setSkillWanted(e.target.value)} required>
+            <option value="">--Select--</option>
+            {(user?.skills_wanted || []).map((skill, i) => (
+              <option key={i} value={skill}>{skill}</option>
+            ))}
           </select>
 
           <label className="request__label">Message</label>
@@ -33,6 +75,9 @@ function RequestDetailsPage() {
             className="request__textarea"
             rows="5"
             placeholder="Write a short message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            required
           />
 
           <button type="submit" className="request__button">Submit Request</button>

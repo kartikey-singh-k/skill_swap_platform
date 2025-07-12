@@ -7,11 +7,7 @@ function Header() {
   const { user, logout } = useAuth();
 
   const handleProfileClick = () => {
-    if (user) {
-      navigate("/profile");
-    } else {
-      navigate("/login");
-    }
+    navigate(user ? "/profile" : "/login");
   };
 
   const handleLogout = () => {
@@ -24,9 +20,11 @@ function Header() {
       <div className="left-section" onClick={() => navigate("/")}>
         <h1 className="site-title">Skill Swap Platform</h1>
       </div>
+
       <div className="right-section">
         {user ? (
           <>
+            <span className="welcome-text">Hi, {user.name.split(" ")[0]}</span>
             <button onClick={handleProfileClick} className="header-btn">Profile</button>
             <button onClick={handleLogout} className="header-btn">Logout</button>
           </>
