@@ -3,20 +3,6 @@ import React, { useState } from "react";
 import profiles from "./profile";
 
 function SkillSwapPage() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const profilesPerPage = 3;
-  const totalPages = Math.ceil(profiles.length / profilesPerPage);
-
-  const indexOfLastProfile = currentPage * profilesPerPage;
-  const indexOfFirstProfile = indexOfLastProfile - profilesPerPage;
-  const currentProfiles = profiles.slice(indexOfFirstProfile, indexOfLastProfile);
-
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 1 && pageNumber <= totalPages) {
-      setCurrentPage(pageNumber);
-    }
-  };
-
   return (
     <div className="page-container">
       <header className="header">
@@ -35,7 +21,7 @@ function SkillSwapPage() {
       </div>
 
       <div className="profile-list">
-        {currentProfiles.map((profile, index) => (
+        {profiles.map((profile, index) => (
           <div key={index} className="profile-card">
             <div className="profile-photo">Profile Photo</div>
             <div className="profile-info">
@@ -62,18 +48,6 @@ function SkillSwapPage() {
               <div className="rating">rating <strong>{profile.rating}/5</strong></div>
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((page) => (
-          <button
-            key={page}
-            className={`page-button ${page === currentPage ? "active" : ""}`}
-            onClick={() => handlePageChange(page)}
-          >
-            {page}
-          </button>
         ))}
       </div>
     </div>
