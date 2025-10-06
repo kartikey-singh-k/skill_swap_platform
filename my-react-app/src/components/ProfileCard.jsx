@@ -13,9 +13,10 @@ function ProfileCard({ profile }) {
       <div className="profile-photo">Profile Photo</div>
       <div className="profile-info">
         <h2>{profile.name}</h2>
-        <p><strong>Skills Offered:</strong> {(profile.skillsOffered || []).join(", ")}</p>
-        <p><strong>Skills Wanted:</strong> {(profile.skillsWanted || []).join(", ")}</p>
-        <p>Rating: {profile.rating || "N/A"}/5</p>
+        <p><strong>Email:</strong> {profile.email}</p>
+        <p><strong>Skills Offered:</strong> {(profile.skills_offered || []).join(", ")}</p>
+        <p><strong>Skills Wanted:</strong> {(profile.skills_wanted || []).join(", ")}</p>
+        <p><strong>Rating:</strong> {profile.rating || "N/A"}/5</p>
       </div>
     </div>
   );

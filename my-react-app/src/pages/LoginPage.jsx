@@ -5,30 +5,31 @@ import { useAuth } from "../auth";
 function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth(); // context login stores user
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const res = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (data.success) {
-        login(data.user); // save user in context + localStorage
-        navigate("/");
-      } else {
-        alert(data.message || "Invalid credentials.");
-      }
-    } catch (error) {
-      console.error("Login failed:", error);
-      alert("Server error. Please try again later.");
+    if (data.success) {
+      // ✅ FIX: Pass the token along with the user data to the login function.
+      login(data.user, data.token);
+      navigate("/");
+    } else {
+      alert(data.message || "Invalid credentials.");
     }
-  };
+  } catch (error) {
+    console.error("Login failed:", error);
+    alert("Server error. Please try again later.");
+  }
+};
 
   return (
     <div className="login">
@@ -42,6 +43,7 @@ function LoginPage() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           className="login__input"
@@ -49,17 +51,27 @@ function LoginPage() {
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
 
         <button className="login__button" onClick={handleLogin}>
           Login
         </button>
 
-        <p className="login__footer">
-          <span onClick={() => alert("Recovery not implemented yet.")}>
-            Forgot password or username?
+        <div className="login__links">
+          <span
+            className="login__link"
+            onClick={() => navigate("/recover")}
+          >
+            🔒 Forgot password / username?
           </span>
-        </p>
+          <span
+            className="login__link"
+            onClick={() => navigate("/register")}
+          >
+            ➕ New user? Register here
+          </span>
+        </div>
       </div>
     </div>
   );

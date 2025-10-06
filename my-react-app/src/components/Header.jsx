@@ -25,6 +25,8 @@ function Header() {
         {user ? (
           <>
             <span className="welcome-text">Hi, {user.name.split(" ")[0]}</span>
+            {/* ADD THIS NEW BUTTON */}
+            <button onClick={() => navigate("/requests-inbox")} className="header-btn">Inbox</button>
             <button onClick={handleProfileClick} className="header-btn">Profile</button>
             <button onClick={handleLogout} className="header-btn">Logout</button>
           </>

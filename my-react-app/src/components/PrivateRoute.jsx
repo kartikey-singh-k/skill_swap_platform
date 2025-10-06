@@ -1,10 +1,18 @@
+// src/components/PrivateRoute.jsx
+
 import React from "react";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../auth"; // Make sure to import this
 
 function PrivateRoute({ children }) {
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-  console.log("PrivateRoute check:", isLoggedIn);
-  return isLoggedIn ? children : <Navigate to="/login" replace />;
+  const { user } = useAuth(); // Use the hook to get the real user object
+
+  if (!user) {
+    // If there is no user, redirect to the /login page
+    return <Navigate to="/login" replace />;
+  }
+
+  return children; // If there is a user, render the component
 }
 
 export default PrivateRoute;

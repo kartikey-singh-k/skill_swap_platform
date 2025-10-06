@@ -11,43 +11,57 @@ function RequestDetailsPage() {
   const [skillWanted, setSkillWanted] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  // In src/pages/RequestDetailsPage.jsx
 
-    if (!user) {
-      alert("Please login to send requests.");
-      navigate("/login");
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const requestBody = {
-      fromUserId: user.id,
-      toUserId: parseInt(toUserId),
-      skillOffered,
-      skillWanted,
-      message,
-    };
+  if (!user) {
+    alert("Please login to send requests.");
+    navigate("/login");
+    return;
+  }
 
-    try {
-      const response = await fetch("http://localhost:5000/api/requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestBody),
-      });
+  const token = localStorage.getItem("token"); // 1. Get the token from localStorage
 
-      const result = await response.json();
+  if (!token) {
+    alert("Authentication error. Please login again.");
+    navigate("/login");
+    return;
+  }
 
-      if (result.success) {
-        alert("✅ Skill swap request submitted!");
-        navigate("/");
-      } else {
-        alert("❌ Failed to send request.");
-      }
-    } catch (err) {
-      console.error("Error submitting request:", err);
-      alert("Server error.");
-    }
+  const requestBody = {
+    fromUserId: user.id,
+    toUserId: parseInt(toUserId),
+    skillOffered,
+    skillWanted,
+    message,
   };
+
+  try {
+    const response = await fetch("http://localhost:5000/api/requests", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // 2. Add the Authorization header to send the token
+        "Authorization": `Bearer ${token}`,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      alert("✅ Skill swap request submitted!");
+      navigate("/");
+    } else {
+      alert(result.message || "❌ Failed to send request.");
+    }
+  } catch (err) {
+    console.error("Error submitting request:", err);
+    alert("Server error.");
+  }
+};
 
   return (
     <div className="request">
