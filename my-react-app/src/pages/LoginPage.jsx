@@ -63,13 +63,13 @@ function LoginPage() {
             className="login__link"
             onClick={() => navigate("/recover")}
           >
-            🔒 Forgot password / username?
+             Forgot password / username?
           </span>
           <span
             className="login__link"
             onClick={() => navigate("/register")}
           >
-            ➕ New user? Register here
+            New user? Register here
           </span>
         </div>
       </div>
