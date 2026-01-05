@@ -26,12 +26,16 @@ Ensure PostgreSQL is running and create a database named `skills`.
 Run the SQL script located in `database.sql` (or create tables for `users` and `requests`).
 
 ### 2. Backend Setup
-```bash```
+```bash
 cd server
+npm install
+# Configure your db.js with your Postgres credentials
+node server.js
 Server runs on http://localhost:5000
 
 3. Frontend Setup
 Bash
+
 # Open a new terminal
 cd client
 npm install
@@ -44,6 +48,3 @@ Integration of a real-time chat via Socket.io.
 Advanced filtering and search for specific skills.
 
 User rating and review system.
-npm install
-# Configure your db.js with your Postgres credentials
-node server.js
